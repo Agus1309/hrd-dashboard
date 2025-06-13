@@ -22,6 +22,44 @@ async function loadDashboard() {
       fetchCSV(urls.profil),
       fetchCSV(urls.kalender)
     ]);
+// GRAFIK GENDER (Bar Chart)
+const genderIndex = karyawan[0].indexOf("Jenis Kelamin");
+let laki = 0, perempuan = 0;
+for (let i = 1; i < karyawan.length; i++) {
+  const jk = karyawan[i][genderIndex]?.toLowerCase();
+  if (jk === "laki-laki") laki++;
+  else if (jk === "perempuan") perempuan++;
+}
+new Chart(document.getElementById("genderChart"), {
+  type: "bar",
+  data: {
+    labels: ["Laki-laki", "Perempuan"],
+    datasets: [{
+      label: "Jumlah Karyawan",
+      data: [laki, perempuan],
+      backgroundColor: ["#36A2EB", "#FF6384"]
+    }]
+  }
+});
+
+// GRAFIK STATUS REKRUTMEN (Pie Chart)
+const statusIndex = rekrutmen[0].indexOf("Status");
+const statusMap = {};
+for (let i = 1; i < rekrutmen.length; i++) {
+  const status = rekrutmen[i][statusIndex] || "Tidak Diketahui";
+  statusMap[status] = (statusMap[status] || 0) + 1;
+}
+new Chart(document.getElementById("rekrutmenChart"), {
+  type: "pie",
+  data: {
+    labels: Object.keys(statusMap),
+    datasets: [{
+      label: "Status Rekrutmen",
+      data: Object.values(statusMap),
+      backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"]
+    }]
+  }
+});
 
     document.getElementById("summary").innerHTML = `<h3>Total Karyawan: ${karyawan.length - 1}</h3>`;
     document.getElementById("top-absen").innerHTML = `<h3>Total Absen (rekap): ${absensi.length - 1}</h3>`;
